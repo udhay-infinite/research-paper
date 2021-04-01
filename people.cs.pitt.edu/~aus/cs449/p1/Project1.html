@@ -1,0 +1,384 @@
+
+<!-- saved from url=(0091)http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/project-01.html -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>cs449 Project #1</title>
+
+<style type="text/css">
+<!--
+body {
+	margin-top: 15px;
+	margin-right: 15px;
+	margin-bottom: 15px;
+	margin-left: 15px;
+	color: #000066;
+	background-color: #FFFFFF;
+	font-family: "verdana";
+	serif;
+}
+-->
+</style>
+
+<style type="text/css"></style>
+</head>
+
+<body>
+	<h1 align="center">Project #1: File I/O &amp; Digital Signal Processing</h1>
+	<hr>
+	<div align="center">
+		<span style='font-size: 18.0pt; color: red'>Due: Sunday, February 7, 2016 at 11:59pm</span>
+	</div>
+	<h3>Background:</h3>
+	<p>
+		We now apply everything we know about file I/O to process a digital signal. For our purposes a digital signal is a sequence of values representing the amplitude of a wave with respect to time. These
+		values are time sequential at equal time intervals apart. The amount of time between each sample determines the <b>sampling rate</b>. If a series of amplitude values are 1000'th of second apart then
+		the sampling rate is said to be 1000 samples per second or 1000Hz.
+	</p>
+	<p>
+		<img src="periodic.jpg" alt="periodic and relatively clean signal (sine)">
+	</p>
+
+	<p>A few fundamental characteristics of a periodic signal (wave) are:</p>
+
+	<ul>
+		<li>Frequency: how often a wave repeats or cycles. Frequency is typically expressed in units called Hertz (Hz.) which is cycles per second.<br> <br>
+
+		</li>
+		<li>Period: the reciprocal of frequency. If a wave has a frequency of 10 Hz (cycles per second) then its period is 1/10th of a second or 100 milliseconds etc.<br> <br>
+
+		</li>
+		<li>Amplitude: the highest value of the wave in any given cycle. This term is overloaded in that we also speak of the value of the wave at any given time as the amplitude of the wave at that
+			given time. Typically when someone asks "What is the amplitude of the wave"? - they refer to the highest value at the crest (peak). Conversely, the lowest value at the trough (nadir) of the wave
+			could also be used as the amplitude of the wave.</li>
+	</ul>
+
+	<p>In our above discussion an important assumption is being made. The wave is periodic.</p>
+
+	<hr>
+	<h1>The Assignment: Write two C programs</h1>
+
+	<ul>
+		<li><h2>
+				The first program will be named txt2bin.c <a href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/txt2bin.c_STARTER">txt2bin.c_STARTER</a>
+			</h2>
+			<p>
+				The txt2bin.c program will read a text file of numbers such as <a href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/sine-1.txt">sine-1.txt</a> which represents the
+				digital signal. These values are a simulation of a 12 bit A/D conversion that is centered around zero. Thus the values will range from -2047 to + 2048. Each value will be written out in 16 bits
+				(short int). Your txt2bin.c progam will read this text file one number at a time until end of file. Each time a number is read from the text file, that number will be written out (using fwrite) to
+				a binary file. The value written out will be a short int (16 bits on most systems). Your txt2bin.c program will take two command line args: the input filename and the output filename. The input
+				file should be the text file named "sine-1.txt" or such. The second command line argument will be the name of a binary file that is to be created such as "sine-1.bin". Since your program will
+				write out a binary value every time it reads a number from the text file, you will not use any arrays anywhere in this program (or the second program either). Every value must be read in from the
+				text file using <big><tt>fscanf(infile, "%hi", &amp;shortVal )</tt></big>, and then a value written to the binary output file using <big><tt>fwrite( &amp;shortVal, sizeof(shortVal), 1,
+						outFile )</tt></big> as illustrated in the File I/O demo code in Chapter 1.3.
+			</p>
+			<p>
+				After you write out the binary file, close both files and then reopen the binary file for reading. Read the binary values back in one at a time and echo them out to stdout via <big><tt>printf</tt></big>.
+				Your txt2bin program must not write any other text to stdout during execution. After you have finished echoing the values read back from the binary file - close the binary file.
+			</p>
+
+			<p>
+				Below is what a compilation then execution of txt2bin should look like: (the .exe is not needed on the executable - I just named it that way for emphasis/clarity). <strong>Your txt2bin
+					program must not write anything to stdout except the numbers you read back in from the binary file you just wrote to disk.</strong>
+			</p> <pre>
+				<code>
+					<big>
+$ gcc -W -Wall -Wextra -O2  txt2bin.c  -o txt2bin.exe
+$ ./txt2bin.exe sine-1.txt sine-1.bin
+814
+1533
+1652
+1523
+1843
+1990
+2047
+2016
+1924
+1987
+1523
+1211
+1055
+777
+566
+241
+0
+-110
+-508
+-946
+-1129
+-1427
+-1918
+-1771
+-2015
+-2004
+-1883
+-1752
+-1806
+-1600
+-1170
+-826
+-724
+-334
+-212
+0
+474
+862
+940
+1365
+1353
+1917
+1877
+2016
+2047
+2016
+1847
+1687
+1459
+1277
+1027
+818
+152
+0
+-106
+-443
+-693
+-1236
+-1206
+-1595
+-1781
+-1923
+-1987
+-1980
+-2015
+-1983
+-1680
+-1530
+-1459
+-1233
+-508
+-341
+-102
+123
+551
+755
+1163
+1295
+1688
+1873
+1680
+1867
+2047
+1814
+1803
+1646
+1402
+1520
+1030
+790
+571
+126
+-174
+-642
+-829
+-1126
+-1692
+-1699
+-1923
+-2015
+-2046
+-2015
+-1744
+-1981
+-1485
+-1450
+-1134
+-792
+-401
+0
+180
+582
+756
+946
+1452
+1339
+1768
+1924
+1838
+2047
+2016
+1951
+1596
+1415
+1078
+1260
+740
+266
+0
+-250
+-683
+-1118
+-1491
+-1787
+-1970
+-1823
+-2015
+-1855
+-2041
+-1707
+-1592
+-1711
+-1374
+-1266
+-613
+-148
+0
+358
+833
+1218
+1475
+1527
+1781
+1895
+1854
+2047
+2016
+1680
+1553
+1731
+1234
+1174
+541
+367
+-95
+-195
+-591
+-1149
+-1528
+-1770
+-1539
+-1923
+-2015
+-2046
+-1915
+-1882
+-1686
+-1444
+-1545
+-1177
+-929
+-257
+0
+273
+934
+1054
+$
+</big>
+				</code>
+			</pre>
+
+			<h4>Use Linux tools to verify the correctness of your txt2bin program</h4>
+
+			<p>If your txt2bin program was written correctly, you will see a file named sine-1.bin with a size of 372 bytes in your directory. You can verify using the ls command a follows:</p> <pre>
+				<code>
+<big>
+$ ls -l *.bin
+-rw-r--r--  1 hoffmant users 372 Jan 12 21:57 sine-1.bin
+$</big>
+				</code>
+			</pre>
+			<p>If your txt2bin program is correct you should also notice that the output from it is identical to the contents of the original sine-1.txt file. Linux can help you verify this by using the
+				following commands:</p> <pre>
+				<code>
+					<big>
+$ ./txt2bin.exe sine-1.txt sine-1.bin &gt; output.txt
+$ diff output.txt sine-1.txt
+$</big>
+				</code>
+			</pre>
+
+			<p>
+				The first command executed your program again but this time the output that normally would have gone to the screen (stdout) was redirected by the carrot operator <big><strong>&gt;</strong></big>
+				into a file named output.txt.
+			</p>
+			<p>The second command (diff) looks for any differences between then two files and reports each line that differs from the corresponding line in the other file. Since there was no ouput from the
+				diff command, we know that the two files are identical and that your binary file must be correct since it is of the correct size and produced the correct values when echoed back to the screen.</p></li>
+		<li><h2>
+				The second program will be named project-1.c. Here is a starter file: <a href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/project-1.c_STARTER">project-1.c_STARTER</a>
+			</h2>
+
+			<ul>
+				<li>Your project1.c will take one command line arg - the name of the binary file. It will read the binary file calculate some basic statistics pertaining to the digital signal represented by
+					the sequence of values in the file. For each FULL wave detected you are to output one line of text with the values seperated by TAB. On each line you are to print the following:
+					<ul>
+						<br>
+						<li>sample # on which this wave <b>ended</b>
+						</li>
+						<li>the value of the above ending sample</li>
+						<li>the number of samples in this wave</li>
+						<li>the peak value in this wave (highest)</li>
+						<li>the nadir value in this wave (lowest)</li>
+					</ul>
+					<p>Here is a sample execution with correct output for the first sine wave.</p> <img src="output-1.jpg">
+
+					<p>Here is a graph of the first sine wave. This graph shows where those output values came from. Note that the first 35 values are not part of a full wave because a full wave must start
+						either on zero or the first point above zero after a zero crossing.</p> <img src="sine-1.jpg">
+
+
+					<h4>Besides visual inspection you can use Linux tools again to verify that your project-1 program is correct by redirecting the screen output to a file and then diff to verify it matches the
+						expected output.</h4> <pre>
+						<code>
+							<div align="left">
+							<big>
+$ ./project-1.exe sine-1.bin &gt; output.txt
+$ diff --ignore-all-space --ignore-blank-lines output.txt correct-output-sine-1.txt</big>
+							</div>
+						</code>
+					</pre>
+
+					<p>Notice we use a more forgiving form of the diff command which allows you to use spaces or tabs and only looks at the non whitespace.</p>
+
+
+					<h3>Here are your input files and the expected output for each file:</h3>
+					<ul>
+						<li><a href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/sine-1.txt">sine-1.txt</a> <a
+							href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/correct-output-sine-1.txt">correct-output-sine-1.txt</a></li>
+						<li><a href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/sine-2.txt">sine-2.txt</a> <a
+							href="http://people.cs.pitt.edu/~jacklange/teaching/cs449-s16/projects/project-01/correct-output-sine-2.txt">correct-output-sine-2.txt</a></li>
+					</ul>
+
+					<h4>Here is a graph of the data in "sine-2.txt" with indications of wave detection and characteristic values.</h4> <img src="sine-2.jpg">
+
+					<h1>Environment</h1>
+
+					<p class=MsoNormal>
+						Ensure that your program builds and runs on <b>thoth.cs.pitt.edu</b> as that will be where we are testing.
+					</p>
+
+					<h1 style='margin-top: 12.0pt; text-align: justify'>Submission</h1>
+
+					<p class=MsoNormal style='text-align: justify; line-height: normal'>When you’re done, create a gzipped tarball (as we did in the first and second lab) of your commented source files and
+						compiled executables, and copy to this location:</p>
+
+					<p class=MsoNormal style='margin-left: .5in; line-height: normal'>
+						<span style='font-size: 12.0pt; font-family: Consolas'>~aus4/submit/449/</span>
+					</p>
+
+					<p class=MsoNormal style='text-align: justify; line-height: normal'>
+						<i>Make sure you name the file <b>USERNAME_p1.tar.gz</b> where USERNAME is your Pitt username (e.g. aus4), and that you have your name in the comments of your source file.
+						</i>
+					</p>
+
+					<p class=MsoNormal style='text-align: justify; line-height: normal'>
+						Note that this directory is insert-only, you may not delete or modify your submissions once in the directory. If you’ve made a mistake before the deadline, resubmit with a number suffix like <span
+							style='font-family: Consolas'>USERNAME_p1_1.tar.gz</span>
+					</p>
+
+					<p class=MsoNormal style='text-align: justify; line-height: normal'>The highest numbered file before the deadline will be the one that is graded, however for simplicity, please make sure
+						you’ve done all the work and included all necessary files before you submit.</p>
+
+
+				</li>
+			</ul></li>
+	</ul>
+</body>
+</html>
